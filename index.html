@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Palworld — Guide du Ranch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --bg: #182016;
+    --bg-2: #131a11;
+    --panel: #202a1c;
+    --line: #3a4a32;
+    --grass: #8fd14f;
+    --grass-dark: #5f9a2f;
+    --amber: #f2b23a;
+    --sky: #6fc8d9;
+    --cream: #ecead9;
+    --dim: #9aa892;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(143,209,79,0.08), transparent 45%),
+      radial-gradient(circle at 90% 90%, rgba(111,200,217,0.06), transparent 40%),
+      var(--bg);
+    color: var(--cream);
+    font-family: 'Space Grotesk', sans-serif;
+    padding: 48px 20px 80px;
+  }
+
+  .wrap{ max-width: 1040px; margin: 0 auto; }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    border: 2px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-2), #101508);
+    border-radius: 18px;
+    padding: 40px 36px 34px;
+    margin-bottom: 34px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(143,209,79,0.05) 28px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    color: var(--grass);
+    letter-spacing: 3px;
+    font-size: 12px;
+    text-transform: uppercase;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:"◆"; color:var(--amber); }
+  h1{
+    font-family:'Rubik Mono One', sans-serif;
+    font-weight:400;
+    font-size: 42px;
+    line-height:1.15;
+    margin: 14px 0 10px;
+    color: var(--cream);
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  }
+  h1 span{ color: var(--grass); }
+  .sub{
+    color: var(--dim);
+    font-size: 15px;
+    max-width: 560px;
+    line-height:1.5;
+  }
+  .tag-row{ display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+  .pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    border: 1px solid var(--line);
+    color: var(--sky);
+    padding: 5px 10px;
+    border-radius: 100px;
+    background: rgba(111,200,217,0.06);
+  }
+
+  /* SECTION LABEL */
+  .section-label{
+    display:flex; align-items:center; gap:12px;
+    margin: 46px 0 18px;
+  }
+  .section-label .icon{
+    width:34px; height:34px;
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px;
+    border:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .section-label h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 19px;
+    margin:0;
+    color: var(--cream);
+  }
+  .section-label small{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color: var(--dim);
+    letter-spacing:1px;
+    margin-top:2px;
+  }
+
+  /* GRID OF PAL CARDS */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+  }
+  .card{
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 16px 16px 14px;
+    position:relative;
+    transition: border-color .15s ease;
+  }
+  .card:hover{ border-color: var(--grass-dark); }
+  .card .top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-bottom:10px;
+  }
+  .card .name{
+    font-weight:700;
+    font-size:15.5px;
+    color: var(--cream);
+  }
+  .card .rate{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color: var(--dim);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:2px 6px;
+    white-space:nowrap;
+  }
+  .card .drop{
+    display:flex; align-items:center; gap:8px;
+    font-size:13.5px;
+    color: var(--amber);
+    font-weight:600;
+  }
+  .card .drop .dot{
+    width:7px;height:7px;border-radius:50%;
+    background: var(--amber);
+    flex-shrink:0;
+  }
+  .card .note{
+    font-size:11.5px;
+    color: var(--dim);
+    margin-top:8px;
+    line-height:1.45;
+  }
+
+  /* leather warning box */
+  .callout{
+    border: 1px dashed #c96a4a;
+    background: rgba(201,106,74,0.08);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-top: 14px;
+    display:flex; gap:14px; align-items:flex-start;
+  }
+  .callout .mark{
+    font-size:20px; line-height:1;
+  }
+  .callout .txt strong{ color:#e8a48c; display:block; margin-bottom:3px; font-size:13.5px;}
+  .callout .txt span{ color: var(--dim); font-size:12.5px; line-height:1.5; }
+
+  /* mechanics strip */
+  .mech-strip{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap:12px;
+    margin-top:18px;
+  }
+  .mech{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    background: linear-gradient(180deg, rgba(143,209,79,0.04), transparent);
+  }
+  .mech .num{
+    font-family:'JetBrains Mono', monospace;
+    color: var(--grass);
+    font-size:11px;
+  }
+  .mech p{
+    font-size:13px;
+    color: var(--cream);
+    line-height:1.5;
+    margin: 6px 0 0;
+  }
+  .mech p b{ color: var(--amber); }
+
+  footer{
+    margin-top: 50px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--dim);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .pal-img{
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+}
+
+  /* SEARCH */
+  .search-box{
+    position: relative;
+    margin-top: 22px;
+  }
+  .search-box input{
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px 12px 40px;
+    color: var(--cream);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  .search-box input:focus{ border-color: var(--grass-dark); }
+  .search-box input::placeholder{ color: var(--dim); }
+  .search-box::before{
+    content:"🔍";
+    position:absolute;
+    left:14px; top:50%;
+    transform: translateY(-50%);
+    font-size:13px;
+    opacity:.7;
+    pointer-events:none;
+  }
+  .no-results{
+    display:none;
+    color: var(--dim);
+    font-size: 13px;
+    font-family:'JetBrains Mono', monospace;
+    text-align:center;
+    padding: 30px 0;
+  }
+  .section-hidden{ display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Guide de base — Palworld</div>
+    <h1>Le <span>Ranch</span><br>qui produit tout seul</h1>
+    <p class="sub">Débloqué au niveau 5 (2 points de technologie). Chaque Pal ayant l'aptitude "Élevage" génère une ressource passivement, toutes les ~50 secondes environ, sans combat.</p>
+    <div class="tag-row">
+      <span class="pill">Niv. 5 · déblocage</span>
+      <span class="pill">Aptitude : Élevage</span>
+      <span class="pill">Rendement lié au rang de condensation</span>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="palSearch" placeholder="Rechercher un Pal ou une ressource (ex: miel, laine, Vixy...)">
+  </div>
+
+  <div class="no-results" id="noResults">Aucun résultat trouvé.</div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">🥚</div>
+    <div><h2>Œufs & Nourriture</h2><small>PRODUCTION DE BASE</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/T_ChickenPal_icon_normal.png" alt="Chikipi" class="pal-img">
+      <div class="top"><span class="name">Chikipi</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Œuf</div>
+      <div class="note">Un œuf toutes les ~50s. Indispensable pour les gâteaux d'élevage.</div>
+    </div>
+    <div class="card">
+      <img src="images/Mozzarina.webp" alt="Mozzarina" class="pal-img">
+      <div class="top"><span class="name">Mozzarina</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Lait</div>
+    </div>
+    <div class="card">
+      <img src="images/Broncherry.webp" alt="Broncherry" class="pal-img">
+      <div class="top"><span class="name">Broncherry</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Baies rouges</div>
+    </div>
+    <div class="card">
+      <img src="images/Caprity.webp" alt="Caprity" class="pal-img">
+      <div class="top"><span class="name">Caprity</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Baies rouges</div>
+    </div>
+    <div class="card">
+      <img src="images/Beegarde.webp" alt="Beegarde" class="pal-img">
+      <div class="top"><span class="name">Beegarde</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Miel</div>
+      <div class="note">Ressource introuvable en boutique — le Ranch est la seule source fiable.</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">🧶</div>
+    <div><h2>Laine & Textile</h2><small>MATÉRIAUX D'ARTISANAT</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Lamball.webp" alt="Lamball" class="pal-img">
+      <div class="top"><span class="name">Lamball</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Laine</div>
+    </div>
+    <div class="card">
+      <img src="images/Cremis.webp" alt="Cremis" class="pal-img">
+      <div class="top"><span class="name">Cremis</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Laine</div>
+    </div>
+    <div class="card">
+      <img src="images/Melpaca.webp" alt="Melpaca" class="pal-img">
+      <div class="top"><span class="name">Melpaca</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Laine</div>
+    </div>
+    <div class="card">
+      <img src="images/Woolipop.webp" alt="Woolipop" class="pal-img">
+      <div class="top"><span class="name">Woolipop</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Barbe à papa</div>
+    </div>
+    <div class="card">
+      <img src="images/WoolipopTerra.webp" alt="Woolipop Terra" class="pal-img">
+      <div class="top"><span class="name">Woolipop Terra</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Barbe à papa caramel</div>
+    </div>
+    <div class="card">
+      <img src="images/Sibelyx.webp" alt="Sibelyx" class="pal-img">
+      <div class="top"><span class="name">Sibelyx</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Tissu haute qualité</div>
+    </div>
+    <div class="card">
+      <img src="images/SibelyxPrimo.webp" alt="Sibelyx Primo" class="pal-img">
+      <div class="top"><span class="name">Sibelyx Primo</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Tissu haute qualité</div>
+    </div>
+    <div class="card">
+      <img src="images/Kelpsea.webp" alt="Kelpsea" class="pal-img">
+      <div class="top"><span class="name">Kelpsea</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Fluide de Pal</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">⛏️</div>
+    <div><h2>Minerais & Ressources rares</h2><small>ÉCONOMIE ET CRAFT AVANCÉ</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Dumud.webp" alt="Dumud" class="pal-img">
+      <div class="top"><span class="name">Dumud / Dumud Gild</span><span class="rate">~80/20</span></div>
+      <div class="drop"><span class="dot"></span>Huile de Pal HQ <em style="color:var(--dim); font-weight:400;">ou</em> Pièce d'or</div>
+      <div class="note">Drop mixte : ~80% d'huile haute qualité, ~20% de pièces d'or.</div>
+    </div>
+    <div class="card">
+      <img src="images/Sootseer.webp" alt="Sootseer" class="pal-img">
+      <div class="top"><span class="name">Sootseer</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Os</div>
+    </div>
+    <div class="card">
+      <img src="images/Cawgnito.webp" alt="Cawgnito" class="pal-img">
+      <div class="top"><span class="name">Cawgnito</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Os</div>
+    </div>
+    <div class="card">
+      <img src="images/Mau.webp" alt="Mau" class="pal-img">
+      <div class="top"><span class="name">Mau</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Pièces d'or</div>
+      <div class="note">Meilleur rendement en pièces que Dumud à rang égal.</div>
+    </div>
+    <div class="card">
+      <img src="images/Vixy.webp" alt="Vixy" class="pal-img">
+      <div class="top"><span class="name">Vixy</span><span class="rate">variable</span></div>
+      <div class="drop"><span class="dot"></span>Aléatoire</div>
+      <div class="note">Pal Sphere, flèches, os ou pièces d'or — le résultat dépend du rang de condensation.</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">🦴</div>
+    <div><h2>Cuir</h2><small>SELON LE TABLEAU DE DROPS 1.0</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Surfent.webp" alt="Surfent" class="pal-img">
+      <div class="top"><span class="name">Surfent</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Cuir</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">🔥</div>
+    <div><h2>Organes élémentaires</h2><small>FLAMME · GLACE · ÉLECTRIQUE</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Flambelle.webp" alt="Flambelle" class="pal-img">
+      <div class="top"><span class="name">Flambelle</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Organe de flamme</div>
+    </div>
+    <div class="card">
+      <img src="images/Rooby.webp" alt="Rooby" class="pal-img">
+      <div class="top"><span class="name">Rooby</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Organe de flamme</div>
+    </div>
+    <div class="card">
+      <img src="images/KelpseaIgnis.webp" alt="Kelpsea Ignis" class="pal-img">
+      <div class="top"><span class="name">Kelpsea Ignis</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Organe de flamme</div>
+    </div>
+    <div class="card">
+      <img src="images/MauCryst.webp" alt="Mau Cryst" class="pal-img">
+      <div class="top"><span class="name">Mau Cryst</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Organe de glace</div>
+    </div>
+    <div class="card">
+      <img src="images/Sparkit.webp" alt="Sparkit" class="pal-img">
+      <div class="top"><span class="name">Sparkit</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Organe électrique</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">☠️</div>
+    <div><h2>Glande à venin</h2><small>RESSOURCE TOXIQUE</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Depresso.webp" alt="Depresso" class="pal-img">
+      <div class="top"><span class="name">Depresso</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Glande à venin</div>
+    </div>
+    <div class="card">
+      <img src="images/CaprityNoct.webp" alt="Caprity Noct" class="pal-img">
+      <div class="top"><span class="name">Caprity Noct</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Glande à venin</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="section-block" data-section>
+  <div class="section-label">
+    <div class="icon">🌾</div>
+    <div><h2>Récoltes & Champignons</h2><small>GRAINES ET CULTURES</small></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <img src="images/Vaelet.webp" alt="Vaelet" class="pal-img">
+      <div class="top"><span class="name">Vaelet</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Graines de culture</div>
+    </div>
+    <div class="card">
+      <img src="images/Shroomer.webp" alt="Shroomer" class="pal-img">
+      <div class="top"><span class="name">Shroomer</span><span class="rate">100%</span></div>
+      <div class="drop"><span class="dot"></span>Champignons & champignons des cavernes</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="callout">
+    <div class="mark">⚠️</div>
+    <div class="txt">
+      <strong>Cuir : Surfent est la seule source fiable au Ranch</strong>
+      <span>Certains guides indiquent qu'aucun Pal ne produit de cuir passivement (il faudrait alors chasser des Pals comme Eikthyrdeer, Foxparks ou Melpaca en combat), mais le tableau de drops 1.0 confirme que Surfent le produit au Ranch.</span>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="icon">⚙️</div>
+    <div><h2>Mécaniques à retenir</h2><small>COMMENT ÇA MARCHE</small></div>
+  </div>
+  <div class="mech-strip">
+    <div class="mech"><div class="num">01</div><p>Un Pal produit un item toutes les <b>~50 secondes</b>, quel que soit son niveau de vitesse de travail.</p></div>
+    <div class="mech"><div class="num">02</div><p>Les bonus de vitesse de travail <b>n'accélèrent pas</b> le cycle de pâturage, mais font sortir l'item un peu plus vite une fois l'animation lancée.</p></div>
+    <div class="mech"><div class="num">03</div><p>Seule la <b>condensation</b> (fusion de Pals identiques) augmente réellement la quantité moyenne produite par cycle.</p></div>
+    <div class="mech"><div class="num">04</div><p>Atteindre le rang 4 de condensation demande <b>117 exemplaires</b> du même Pal — un investissement long terme.</p></div>
+  </div>
+
+  <footer>
+    <span>Palworld · Guide non-officiel</span>
+    <span>Compilé pour usage personnel</span>
+  </footer>
+
+</div>
+
+<script>
+  const searchInput = document.getElementById('palSearch');
+  const noResults = document.getElementById('noResults');
+  const sections = document.querySelectorAll('[data-section]');
+
+  searchInput.addEventListener('input', function(){
+    const q = this.value.trim().toLowerCase();
+    let anyVisible = false;
+
+    sections.forEach(section => {
+      const cards = section.querySelectorAll('.card');
+      let sectionHasMatch = false;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const match = text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) sectionHasMatch = true;
+      });
+
+      section.classList.toggle('section-hidden', !sectionHasMatch);
+      if (sectionHasMatch) anyVisible = true;
+    });
+
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+</script>
+
+</body>
+</html>
