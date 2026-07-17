@@ -261,10 +261,121 @@
     padding: 30px 0;
   }
   .section-hidden{ display:none; }
+
+  /* TYPE BADGE + FILTER */
+  .ptype{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 16px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 8px 18px 8px 11px;
+    border-radius: 100px;
+    margin: 8px 0 4px;
+    width: fit-content;
+    border: 1px solid var(--line);
+  }
+  .pdot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .ptype-icon{ width:28px; height:28px; object-fit:contain; flex-shrink:0; }
+  .ptype-neutre{ color:#d8d3bd; background:rgba(216,211,189,0.08); }
+  .ptype-neutre .pdot{ background:#d8d3bd; }
+  .ptype-feu{ color:#ff8a5c; background:rgba(255,138,92,0.10); }
+  .ptype-feu .pdot{ background:#ff6b3d; }
+  .ptype-eau{ color:#6fc8d9; background:rgba(111,200,217,0.10); }
+  .ptype-eau .pdot{ background:#4fb3c9; }
+  .ptype-herbe{ color:#8fd14f; background:rgba(143,209,79,0.10); }
+  .ptype-herbe .pdot{ background:#79c236; }
+  .ptype-electrique{ color:#f2e23a; background:rgba(242,226,58,0.10); }
+  .ptype-electrique .pdot{ background:#e8d621; }
+  .ptype-glace{ color:#a8e6f2; background:rgba(168,230,242,0.10); }
+  .ptype-glace .pdot{ background:#8adcee; }
+  .ptype-terre{ color:#c9925a; background:rgba(201,146,90,0.10); }
+  .ptype-terre .pdot{ background:#b87d43; }
+  .ptype-tenebres{ color:#b98af2; background:rgba(185,138,242,0.10); }
+  .ptype-tenebres .pdot{ background:#a267ea; }
+
+  .filter-row{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-top: 14px;
+  }
+  .type-chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 16px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    color: var(--dim);
+    cursor: pointer;
+    display:flex; align-items:center; gap:10px;
+    transition: all .15s ease;
+    user-select:none;
+  }
+  .type-chip .pdot{ width:8px; height:8px; }
+  .type-chip .ptype-icon{ width:26px; height:26px; }
+  .type-chip:hover{ border-color: var(--grass-dark); color: var(--cream); }
+  .type-chip.active{ border-color: currentColor; color: var(--cream); background: rgba(255,255,255,0.04); }
+
+  /* TABS */
+  .tabs{
+    display:flex; gap:8px;
+    margin-bottom: 28px;
+  }
+  .tab-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: .5px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    color: var(--dim);
+    cursor: pointer;
+    transition: all .15s ease;
+    user-select:none;
+  }
+  .tab-btn:hover{ color: var(--cream); }
+  .tab-btn.active{
+    color: var(--bg);
+    background: var(--grass);
+    border-color: var(--grass);
+  }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  /* MINI CARD (Paldeck complet) */
+  .mini-card{
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .mini-img{
+    width: 100%;
+    height: 84px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 2px;
+  }
+  .mini-top{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .mini-num{ font-family:'JetBrains Mono', monospace; color: var(--dim); font-size: 11px; }
+  .mini-name{ font-weight:600; font-size: 14.5px; color: var(--cream); }
+  .mini-types{ display:flex; gap:6px; flex-wrap:wrap; }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <div class="tabs">
+    <div class="tab-btn active" data-tab="ranch">🐓 Ranch</div>
+    <div class="tab-btn" data-tab="allpals">📖 Tous les Pals</div>
+  </div>
+
+  <div id="tab-ranch" class="tab-panel active">
 
   <div class="hero">
     <div class="eyebrow">Guide de base — Palworld</div>
@@ -281,6 +392,18 @@
     <input type="text" id="palSearch" placeholder="Rechercher un Pal ou une ressource (ex: miel, laine, Vixy...)">
   </div>
 
+  <div class="filter-row" id="typeFilters">
+    <div class="type-chip active" data-type="all"><span class="pdot" style="background:var(--cream)"></span>Tous les types</div>
+    <div class="type-chip" data-type="neutre" style="color:#d8d3bd"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="">Neutre</div>
+    <div class="type-chip" data-type="feu" style="color:#ff8a5c"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b" alt="">Feu</div>
+    <div class="type-chip" data-type="eau" style="color:#6fc8d9"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Water_icon.png/64px-Water_icon.png?56f787" alt="">Eau</div>
+    <div class="type-chip" data-type="herbe" style="color:#8fd14f"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="">Herbe</div>
+    <div class="type-chip" data-type="electrique" style="color:#f2e23a"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Electric_icon.png/64px-Electric_icon.png?f0bca3" alt="">Électrique</div>
+    <div class="type-chip" data-type="glace" style="color:#a8e6f2"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9" alt="">Glace</div>
+    <div class="type-chip" data-type="terre" style="color:#c9925a"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ground_icon.png/64px-Ground_icon.png?9a3e51" alt="">Terre</div>
+    <div class="type-chip" data-type="tenebres" style="color:#b98af2"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="">Ténèbres</div>
+  </div>
+
   <div class="no-results" id="noResults">Aucun résultat trouvé.</div>
 
   <div class="section-block" data-section>
@@ -289,35 +412,35 @@
     <div><h2>Œufs & Nourriture</h2><small>PRODUCTION DE BASE</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/T_ChickenPal_icon_normal.png" alt="Chikipi" class="pal-img">
+    <div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/chikipi.png" alt="Chikipi" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Chikipi</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Œuf</div>
       <div class="note">Un œuf toutes les ~50s. Indispensable pour les gâteaux d'élevage.</div>
-    </div>
-    <div class="card">
-      <img src="images/Mozzarina.webp" alt="Mozzarina" class="pal-img">
+    </div><div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mozzarina.png" alt="Mozzarina" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Mozzarina</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Lait</div>
-    </div>
-    <div class="card">
-      <img src="images/Broncherry.webp" alt="Broncherry" class="pal-img">
+    </div><div class="card" data-type="herbe">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/broncherry.png" alt="Broncherry" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Broncherry</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-herbe"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="Herbe">Herbe</div>
       <div class="drop"><span class="dot"></span>Baies rouges</div>
-    </div>
-    <div class="card">
-      <img src="images/Caprity.webp" alt="Caprity" class="pal-img">
+    </div><div class="card" data-type="herbe">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/caprity.png" alt="Caprity" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Caprity</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-herbe"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="Herbe">Herbe</div>
       <div class="drop"><span class="dot"></span>Baies rouges</div>
-    </div>
-    <div class="card">
-      <img src="images/Beegarde.webp" alt="Beegarde" class="pal-img">
+    </div><div class="card" data-type="herbe">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/beegarde.png" alt="Beegarde" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Beegarde</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-herbe"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="Herbe">Herbe</div>
       <div class="drop"><span class="dot"></span>Miel</div>
       <div class="note">Ressource introuvable en boutique — le Ranch est la seule source fiable.</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -325,48 +448,48 @@
     <div><h2>Laine & Textile</h2><small>MATÉRIAUX D'ARTISANAT</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Lamball.webp" alt="Lamball" class="pal-img">
+    <div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lamball.png" alt="Lamball" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Lamball</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Laine</div>
-    </div>
-    <div class="card">
-      <img src="images/Cremis.webp" alt="Cremis" class="pal-img">
+    </div><div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cremis.png" alt="Cremis" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Cremis</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Laine</div>
-    </div>
-    <div class="card">
-      <img src="images/Melpaca.webp" alt="Melpaca" class="pal-img">
+    </div><div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/melpaca.png" alt="Melpaca" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Melpaca</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Laine</div>
-    </div>
-    <div class="card">
-      <img src="images/Woolipop.webp" alt="Woolipop" class="pal-img">
+    </div><div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/woolipop.png" alt="Woolipop" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Woolipop</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Barbe à papa</div>
-    </div>
-    <div class="card">
-      <img src="images/WoolipopTerra.webp" alt="Woolipop Terra" class="pal-img">
+    </div><div class="card" data-type="terre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/woolipop.png" alt="Woolipop Terra" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Woolipop Terra</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-terre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ground_icon.png/64px-Ground_icon.png?9a3e51" alt="Terre">Terre</div>
       <div class="drop"><span class="dot"></span>Barbe à papa caramel</div>
-    </div>
-    <div class="card">
-      <img src="images/Sibelyx.webp" alt="Sibelyx" class="pal-img">
+    </div><div class="card" data-type="glace">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sibelyx.png" alt="Sibelyx" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Sibelyx</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-glace"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9" alt="Glace">Glace</div>
       <div class="drop"><span class="dot"></span>Tissu haute qualité</div>
-    </div>
-    <div class="card">
-      <img src="images/SibelyxPrimo.webp" alt="Sibelyx Primo" class="pal-img">
+    </div><div class="card" data-type="glace">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sibelyx.png" alt="Sibelyx Primo" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Sibelyx Primo</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-glace"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9" alt="Glace">Glace</div>
       <div class="drop"><span class="dot"></span>Tissu haute qualité</div>
-    </div>
-    <div class="card">
-      <img src="images/Kelpsea.webp" alt="Kelpsea" class="pal-img">
+    </div><div class="card" data-type="eau">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kelpsea.png" alt="Kelpsea" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Kelpsea</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-eau"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Water_icon.png/64px-Water_icon.png?56f787" alt="Eau">Eau</div>
       <div class="drop"><span class="dot"></span>Fluide de Pal</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -374,36 +497,36 @@
     <div><h2>Minerais & Ressources rares</h2><small>ÉCONOMIE ET CRAFT AVANCÉ</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Dumud.webp" alt="Dumud" class="pal-img">
+    <div class="card" data-type="terre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dumud.png" alt="Dumud" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Dumud / Dumud Gild</span><span class="rate">~80/20</span></div>
+      <div class="ptype ptype-terre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ground_icon.png/64px-Ground_icon.png?9a3e51" alt="Terre / Eau">Terre / Eau</div>
       <div class="drop"><span class="dot"></span>Huile de Pal HQ <em style="color:var(--dim); font-weight:400;">ou</em> Pièce d'or</div>
       <div class="note">Drop mixte : ~80% d'huile haute qualité, ~20% de pièces d'or.</div>
-    </div>
-    <div class="card">
-      <img src="images/Sootseer.webp" alt="Sootseer" class="pal-img">
+    </div><div class="card" data-type="tenebres">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sootseer.png" alt="Sootseer" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Sootseer</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-tenebres"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="Feu / Ténèbres">Feu / Ténèbres</div>
       <div class="drop"><span class="dot"></span>Os</div>
-    </div>
-    <div class="card">
-      <img src="images/Cawgnito.webp" alt="Cawgnito" class="pal-img">
+    </div><div class="card" data-type="tenebres">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cawgnito.png" alt="Cawgnito" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Cawgnito</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-tenebres"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="Ténèbres">Ténèbres</div>
       <div class="drop"><span class="dot"></span>Os</div>
-    </div>
-    <div class="card">
-      <img src="images/Mau.webp" alt="Mau" class="pal-img">
+    </div><div class="card" data-type="tenebres">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mau.png" alt="Mau" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Mau</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-tenebres"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="Ténèbres">Ténèbres</div>
       <div class="drop"><span class="dot"></span>Pièces d'or</div>
       <div class="note">Meilleur rendement en pièces que Dumud à rang égal.</div>
-    </div>
-    <div class="card">
-      <img src="images/Vixy.webp" alt="Vixy" class="pal-img">
+    </div><div class="card" data-type="neutre">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vixy.png" alt="Vixy" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Vixy</span><span class="rate">variable</span></div>
+      <div class="ptype ptype-neutre"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="Neutre">Neutre</div>
       <div class="drop"><span class="dot"></span>Aléatoire</div>
       <div class="note">Pal Sphere, flèches, os ou pièces d'or — le résultat dépend du rang de condensation.</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -411,13 +534,13 @@
     <div><h2>Cuir</h2><small>SELON LE TABLEAU DE DROPS 1.0</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Surfent.webp" alt="Surfent" class="pal-img">
+    <div class="card" data-type="eau">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/surfent.png" alt="Surfent" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Surfent</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-eau"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Water_icon.png/64px-Water_icon.png?56f787" alt="Eau">Eau</div>
       <div class="drop"><span class="dot"></span>Cuir</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -425,33 +548,33 @@
     <div><h2>Organes élémentaires</h2><small>FLAMME · GLACE · ÉLECTRIQUE</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Flambelle.webp" alt="Flambelle" class="pal-img">
+    <div class="card" data-type="feu">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/flambelle.png" alt="Flambelle" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Flambelle</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-feu"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b" alt="Feu">Feu</div>
       <div class="drop"><span class="dot"></span>Organe de flamme</div>
-    </div>
-    <div class="card">
-      <img src="images/Rooby.webp" alt="Rooby" class="pal-img">
+    </div><div class="card" data-type="feu">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/rooby.png" alt="Rooby" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Rooby</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-feu"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b" alt="Feu">Feu</div>
       <div class="drop"><span class="dot"></span>Organe de flamme</div>
-    </div>
-    <div class="card">
-      <img src="images/KelpseaIgnis.webp" alt="Kelpsea Ignis" class="pal-img">
+    </div><div class="card" data-type="feu">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kelpsea-ignis.png" alt="Kelpsea Ignis" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Kelpsea Ignis</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-feu"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b" alt="Feu">Feu</div>
       <div class="drop"><span class="dot"></span>Organe de flamme</div>
-    </div>
-    <div class="card">
-      <img src="images/MauCryst.webp" alt="Mau Cryst" class="pal-img">
+    </div><div class="card" data-type="glace">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mau-cryst.png" alt="Mau Cryst" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Mau Cryst</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-glace"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9" alt="Glace">Glace</div>
       <div class="drop"><span class="dot"></span>Organe de glace</div>
-    </div>
-    <div class="card">
-      <img src="images/Sparkit.webp" alt="Sparkit" class="pal-img">
+    </div><div class="card" data-type="electrique">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sparkit.png" alt="Sparkit" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Sparkit</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-electrique"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Electric_icon.png/64px-Electric_icon.png?f0bca3" alt="Électrique">Électrique</div>
       <div class="drop"><span class="dot"></span>Organe électrique</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -459,18 +582,18 @@
     <div><h2>Glande à venin</h2><small>RESSOURCE TOXIQUE</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Depresso.webp" alt="Depresso" class="pal-img">
+    <div class="card" data-type="tenebres">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/depresso.png" alt="Depresso" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Depresso</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-tenebres"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="Ténèbres">Ténèbres</div>
       <div class="drop"><span class="dot"></span>Glande à venin</div>
-    </div>
-    <div class="card">
-      <img src="images/CaprityNoct.webp" alt="Caprity Noct" class="pal-img">
+    </div><div class="card" data-type="tenebres">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/caprity-noct.png" alt="Caprity Noct" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Caprity Noct</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-tenebres"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="Ténèbres">Ténèbres</div>
       <div class="drop"><span class="dot"></span>Glande à venin</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="section-block" data-section>
   <div class="section-label">
@@ -478,18 +601,18 @@
     <div><h2>Récoltes & Champignons</h2><small>GRAINES ET CULTURES</small></div>
   </div>
   <div class="grid">
-    <div class="card">
-      <img src="images/Vaelet.webp" alt="Vaelet" class="pal-img">
+    <div class="card" data-type="herbe">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vaelet.png" alt="Vaelet" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Vaelet</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-herbe"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="Herbe">Herbe</div>
       <div class="drop"><span class="dot"></span>Graines de culture</div>
-    </div>
-    <div class="card">
-      <img src="images/Shroomer.webp" alt="Shroomer" class="pal-img">
+    </div><div class="card" data-type="herbe">
+      <img src="https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/shroomer.png" alt="Shroomer" class="pal-img" loading="lazy">
       <div class="top"><span class="name">Shroomer</span><span class="rate">100%</span></div>
+      <div class="ptype ptype-herbe"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="Herbe">Herbe</div>
       <div class="drop"><span class="dot"></span>Champignons & champignons des cavernes</div>
     </div>
-  </div>
-  </div>
+  </div></div>
 
   <div class="callout">
     <div class="mark">⚠️</div>
@@ -510,6 +633,43 @@
     <div class="mech"><div class="num">04</div><p>Atteindre le rang 4 de condensation demande <b>117 exemplaires</b> du même Pal — un investissement long terme.</p></div>
   </div>
 
+  </div>
+
+  <div id="tab-allpals" class="tab-panel">
+
+  <div class="hero">
+    <div class="eyebrow">Paldeck complet — Palworld</div>
+    <h1>Tous les <span>Pals</span><br>et leurs types</h1>
+    <p class="sub">Les 215 entrées du Paldeck (156 Pals de base + variantes régionales/élémentaires), avec leur numéro et leur(s) type(s) élémentaire(s).</p>
+    <div class="tag-row">
+      <span class="pill" id="allPalsCount">215 entrées</span>
+      <span class="pill">9 types élémentaires</span>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="allPalSearch" placeholder="Rechercher un Pal par nom ou numéro...">
+  </div>
+
+  <div class="filter-row" id="allTypeFilters">
+    <div class="type-chip active" data-type="all"><span class="pdot" style="background:var(--cream)"></span>Tous les types</div>
+    <div class="type-chip" data-type="neutre" style="color:#d8d3bd"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc" alt="">Neutre</div>
+    <div class="type-chip" data-type="feu" style="color:#ff8a5c"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b" alt="">Feu</div>
+    <div class="type-chip" data-type="eau" style="color:#6fc8d9"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Water_icon.png/64px-Water_icon.png?56f787" alt="">Eau</div>
+    <div class="type-chip" data-type="herbe" style="color:#8fd14f"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046" alt="">Herbe</div>
+    <div class="type-chip" data-type="electrique" style="color:#f2e23a"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Electric_icon.png/64px-Electric_icon.png?f0bca3" alt="">Électrique</div>
+    <div class="type-chip" data-type="glace" style="color:#a8e6f2"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9" alt="">Glace</div>
+    <div class="type-chip" data-type="terre" style="color:#c9925a"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Ground_icon.png/64px-Ground_icon.png?9a3e51" alt="">Terre</div>
+    <div class="type-chip" data-type="tenebres" style="color:#b98af2"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44" alt="">Ténèbres</div>
+    <div class="type-chip" data-type="dragon" style="color:#9c8bf7"><img class="ptype-icon" src="https://palworld.wiki.gg/images/thumb/Dragon_icon.png/64px-Dragon_icon.png?527d27" alt="">Dragon</div>
+  </div>
+
+  <div class="no-results" id="allNoResults">Aucun résultat trouvé.</div>
+
+  <div class="grid" id="allPalsGrid"></div>
+
+  </div>
+
   <footer>
     <span>Palworld · Guide non-officiel</span>
     <span>Compilé pour usage personnel</span>
@@ -521,9 +681,11 @@
   const searchInput = document.getElementById('palSearch');
   const noResults = document.getElementById('noResults');
   const sections = document.querySelectorAll('[data-section]');
+  const typeChips = document.querySelectorAll('.type-chip');
+  let activeType = 'all';
 
-  searchInput.addEventListener('input', function(){
-    const q = this.value.trim().toLowerCase();
+  function applyFilters(){
+    const q = searchInput.value.trim().toLowerCase();
     let anyVisible = false;
 
     sections.forEach(section => {
@@ -532,7 +694,9 @@
 
       cards.forEach(card => {
         const text = card.textContent.toLowerCase();
-        const match = text.includes(q);
+        const matchesText = text.includes(q);
+        const matchesType = (activeType === 'all') || (card.dataset.type === activeType);
+        const match = matchesText && matchesType;
         card.style.display = match ? '' : 'none';
         if (match) sectionHasMatch = true;
       });
@@ -541,8 +705,90 @@
       if (sectionHasMatch) anyVisible = true;
     });
 
-    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+    noResults.style.display = ((q || activeType !== 'all') && !anyVisible) ? 'block' : 'none';
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+
+  typeChips.forEach(chip => {
+    chip.addEventListener('click', function(){
+      activeType = this.dataset.type;
+      typeChips.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      applyFilters();
+    });
   });
+
+  // ===== TAB SWITCHING =====
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ===== ALL PALS TAB =====
+  const ALL_PALS = [{"num": "1", "name": "Lamball", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lamball.png"}, {"num": "2", "name": "Cattiva", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cattiva.png"}, {"num": "3", "name": "Chikipi", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/chikipi.png"}, {"num": "4", "name": "Lifmunk", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lifmunk.png"}, {"num": "5", "name": "Foxparks", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/foxparks.png"}, {"num": "5B", "name": "Foxparks Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/foxparks-cryst.png"}, {"num": "6", "name": "Fuack", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/fuack.png"}, {"num": "6B", "name": "Fuack Ignis", "slugs": ["feu", "eau"], "labels": ["Feu", "Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/fuack-ignis.png"}, {"num": "7", "name": "Sparkit", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sparkit.png"}, {"num": "8", "name": "Tanzee", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/tanzee.png"}, {"num": "9", "name": "Rooby", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/rooby.png"}, {"num": "10", "name": "Pengullet", "slugs": ["eau", "glace"], "labels": ["Eau", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/pengullet.png"}, {"num": "10B", "name": "Pengullet Lux", "slugs": ["eau", "electrique"], "labels": ["Eau", "Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/pengullet-lux.png"}, {"num": "11", "name": "Penking", "slugs": ["eau", "glace"], "labels": ["Eau", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/penking.png"}, {"num": "11B", "name": "Penking Lux", "slugs": ["eau", "electrique"], "labels": ["Eau", "Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/penking-lux.png"}, {"num": "12", "name": "Jolthog", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jolthog.png"}, {"num": "12B", "name": "Jolthog Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jolthog-cryst.png"}, {"num": "13", "name": "Gumoss", "slugs": ["herbe", "terre"], "labels": ["Herbe", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gumoss.png"}, {"num": "14", "name": "Vixy", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vixy.png"}, {"num": "15", "name": "Hoocrates", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/hoocrates.png"}, {"num": "16", "name": "Teafant", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/teafant.png"}, {"num": "17", "name": "Depresso", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/depresso.png"}, {"num": "18", "name": "Cremis", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cremis.png"}, {"num": "19", "name": "Daedream", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/daedream.png"}, {"num": "20", "name": "Rushoar", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/rushoar.png"}, {"num": "21", "name": "Nox", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/nox.png"}, {"num": "22", "name": "Fuddler", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/fuddler.png"}, {"num": "23", "name": "Killamari", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/killamari.png"}, {"num": "23B", "name": "Killamari Primo", "slugs": ["eau", "neutre"], "labels": ["Eau", "Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/killamari-primo.png"}, {"num": "24", "name": "Mau", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mau.png"}, {"num": "24B", "name": "Mau Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mau-cryst.png"}, {"num": "25", "name": "Celaray", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/celaray.png"}, {"num": "25B", "name": "Celaray Lux", "slugs": ["eau", "electrique"], "labels": ["Eau", "Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/celaray-lux.png"}, {"num": "26", "name": "Direhowl", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/direhowl.png"}, {"num": "27", "name": "Tocotoco", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/tocotoco.png"}, {"num": "28", "name": "Flopie", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/flopie.png"}, {"num": "29", "name": "Mozzarina", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mozzarina.png"}, {"num": "30", "name": "Bristla", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bristla.png"}, {"num": "31", "name": "Gobfin", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gobfin.png"}, {"num": "31B", "name": "Gobfin Ignis", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gobfin-ignis.png"}, {"num": "32", "name": "Hangyu", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/hangyu.png"}, {"num": "32B", "name": "Hangyu Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/hangyu-cryst.png"}, {"num": "33", "name": "Mossanda", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mossanda.png"}, {"num": "33B", "name": "Mossanda Lux", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mossanda-lux.png"}, {"num": "34", "name": "Woolipop", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/woolipop.png"}, {"num": "35", "name": "Caprity", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/caprity.png"}, {"num": "35B", "name": "Caprity Noct", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/caprity-noct.png"}, {"num": "36", "name": "Melpaca", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/melpaca.png"}, {"num": "37", "name": "Eikthyrdeer", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/eikthyrdeer.png"}, {"num": "37B", "name": "Eikthyrdeer Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/eikthyrdeer-terra.png"}, {"num": "38", "name": "Nitewing", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/nitewing.png"}, {"num": "39", "name": "Ribbuny", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/ribbuny.png"}, {"num": "39B", "name": "Ribbuny Botan", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/ribbuny-botan.png"}, {"num": "40", "name": "Incineram", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/incineram.png"}, {"num": "40B", "name": "Incineram Noct", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/incineram-noct.png"}, {"num": "41", "name": "Cinnamoth", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cinnamoth.png"}, {"num": "42", "name": "Arsox", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/arsox.png"}, {"num": "43", "name": "Dumud", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dumud.png"}, {"num": "43B", "name": "Dumud Gild", "slugs": ["eau", "terre"], "labels": ["Eau", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dumud-gild.png"}, {"num": "44", "name": "Cawgnito", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cawgnito.png"}, {"num": "45", "name": "Leezpunk", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/leezpunk.png"}, {"num": "45B", "name": "Leezpunk Ignis", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/leezpunk-ignis.png"}, {"num": "46", "name": "Loupmoon", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/loupmoon.png"}, {"num": "46B", "name": "Loupmoon Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/loupmoon-cryst.png"}, {"num": "47", "name": "Galeclaw", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/galeclaw.png"}, {"num": "48", "name": "Robinquill", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/robinquill.png"}, {"num": "48B", "name": "Robinquill Terra", "slugs": ["herbe", "terre"], "labels": ["Herbe", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/robinquill-terra.png"}, {"num": "49", "name": "Gorirat", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gorirat.png"}, {"num": "49B", "name": "Gorirat Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gorirat-terra.png"}, {"num": "50", "name": "Beegarde", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/beegarde.png"}, {"num": "51", "name": "Elizabee", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/elizabee.png"}, {"num": "52", "name": "Grintale", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/grintale.png"}, {"num": "53", "name": "Swee", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/swee.png"}, {"num": "54", "name": "Sweepa", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sweepa.png"}, {"num": "55", "name": "Chillet", "slugs": ["glace", "dragon"], "labels": ["Glace", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/chillet.png"}, {"num": "55B", "name": "Chillet Ignis", "slugs": ["feu", "dragon"], "labels": ["Feu", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/chillet-ignis.png"}, {"num": "56", "name": "Univolt", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/univolt.png"}, {"num": "57", "name": "Foxcicle", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/foxcicle.png"}, {"num": "58", "name": "Pyrin", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/pyrin.png"}, {"num": "58B", "name": "Pyrin Noct", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/pyrin-noct.png"}, {"num": "59", "name": "Reindrix", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/reindrix.png"}, {"num": "60", "name": "Rayhound", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/rayhound.png"}, {"num": "61", "name": "Kitsun", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kitsun.png"}, {"num": "61B", "name": "Kitsun Noct", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kitsun-noct.png"}, {"num": "62", "name": "Dazzi", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dazzi.png"}, {"num": "62B", "name": "Dazzi Noct", "slugs": ["electrique", "tenebres"], "labels": ["Électrique", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dazzi-noct.png"}, {"num": "63", "name": "Lunaris", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lunaris.png"}, {"num": "64", "name": "Dinossom", "slugs": ["herbe", "dragon"], "labels": ["Herbe", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dinossom.png"}, {"num": "64B", "name": "Dinossom Lux", "slugs": ["electrique", "dragon"], "labels": ["Électrique", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dinossom-lux.png"}, {"num": "65", "name": "Surfent", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/surfent.png"}, {"num": "65B", "name": "Surfent Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/surfent-terra.png"}, {"num": "66", "name": "Maraith", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/maraith.png"}, {"num": "67", "name": "Digtoise", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/digtoise.png"}, {"num": "68", "name": "Tombat", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/tombat.png"}, {"num": "69", "name": "Lovander", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lovander.png"}, {"num": "70", "name": "Flambelle", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/flambelle.png"}, {"num": "71", "name": "Vanwyrm", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vanwyrm.png"}, {"num": "71B", "name": "Vanwyrm Cryst", "slugs": ["glace", "tenebres"], "labels": ["Glace", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vanwyrm-cryst.png"}, {"num": "72", "name": "Bushi", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bushi.png"}, {"num": "72B", "name": "Bushi Noct", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bushi-noct.png"}, {"num": "73", "name": "Beakon", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/beakon.png"}, {"num": "74", "name": "Ragnahawk", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/ragnahawk.png"}, {"num": "75", "name": "Katress", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/katress.png"}, {"num": "75B", "name": "Katress Ignis", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/katress-ignis.png"}, {"num": "76", "name": "Wixen", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/wixen.png"}, {"num": "76B", "name": "Wixen Noct", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/wixen-noct.png"}, {"num": "77", "name": "Verdash", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/verdash.png"}, {"num": "78", "name": "Vaelet", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/vaelet.png"}, {"num": "79", "name": "Sibelyx", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sibelyx.png"}, {"num": "80", "name": "Elphidran", "slugs": ["dragon"], "labels": ["Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/elphidran.png"}, {"num": "80B", "name": "Elphidran Aqua", "slugs": ["eau", "dragon"], "labels": ["Eau", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/elphidran-aqua.png"}, {"num": "81", "name": "Kelpsea", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kelpsea.png"}, {"num": "81B", "name": "Kelpsea Ignis", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kelpsea-ignis.png"}, {"num": "82", "name": "Azurobe", "slugs": ["eau", "dragon"], "labels": ["Eau", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/azurobe.png"}, {"num": "82B", "name": "Azurobe Cryst", "slugs": ["glace", "dragon"], "labels": ["Glace", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/azurobe-cryst.png"}, {"num": "83", "name": "Cryolinx", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cryolinx.png"}, {"num": "83B", "name": "Cryolinx Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/cryolinx-terra.png"}, {"num": "84", "name": "Blazehowl", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/blazehowl.png"}, {"num": "84B", "name": "Blazehowl Noct", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/blazehowl-noct.png"}, {"num": "85", "name": "Relaxaurus", "slugs": ["eau", "dragon"], "labels": ["Eau", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/relaxaurus.png"}, {"num": "85B", "name": "Relaxaurus Lux", "slugs": ["electrique", "dragon"], "labels": ["Électrique", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/relaxaurus-lux.png"}, {"num": "86", "name": "Broncherry", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/broncherry.png"}, {"num": "86B", "name": "Broncherry Aqua", "slugs": ["eau", "herbe"], "labels": ["Eau", "Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/broncherry-aqua.png"}, {"num": "87", "name": "Petallia", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/petallia.png"}, {"num": "88", "name": "Reptyro", "slugs": ["feu", "terre"], "labels": ["Feu", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/reptyro.png"}, {"num": "88B", "name": "Reptyro Cryst", "slugs": ["glace", "terre"], "labels": ["Glace", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/reptyro-cryst.png"}, {"num": "89", "name": "Kingpaca", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kingpaca.png"}, {"num": "89B", "name": "Kingpaca Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kingpaca-cryst.png"}, {"num": "90", "name": "Mammorest", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mammorest.png"}, {"num": "90B", "name": "Mammorest Cryst", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mammorest-cryst.png"}, {"num": "91", "name": "Wumpo", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/wumpo.png"}, {"num": "91B", "name": "Wumpo Botan", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/wumpo-botan.png"}, {"num": "92", "name": "Warsect", "slugs": ["herbe", "terre"], "labels": ["Herbe", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/warsect.png"}, {"num": "92B", "name": "Warsect Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/warsect-terra.png"}, {"num": "93", "name": "Fenglope", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/fenglope.png"}, {"num": "93B", "name": "Fenglope Lux", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/fenglope-lux.png"}, {"num": "94", "name": "Felbat", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/felbat.png"}, {"num": "95", "name": "Quivern", "slugs": ["dragon"], "labels": ["Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/quivern.png"}, {"num": "95B", "name": "Quivern Botan", "slugs": ["herbe", "dragon"], "labels": ["Herbe", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/quivern-botan.png"}, {"num": "96", "name": "Blazamut", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/blazamut.png"}, {"num": "96B", "name": "Blazamut Ryu", "slugs": ["feu", "dragon"], "labels": ["Feu", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/blazamut-ryu.png"}, {"num": "97", "name": "Helzephyr", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/helzephyr.png"}, {"num": "97B", "name": "Helzephyr Lux", "slugs": ["electrique", "tenebres"], "labels": ["Électrique", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/helzephyr-lux.png"}, {"num": "98", "name": "Astegon", "slugs": ["tenebres", "dragon"], "labels": ["Ténèbres", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/astegon.png"}, {"num": "99", "name": "Menasting", "slugs": ["terre", "tenebres"], "labels": ["Terre", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/menasting.png"}, {"num": "99B", "name": "Menasting Terra", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/menasting-terra.png"}, {"num": "100", "name": "Anubis", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/anubis.png"}, {"num": "101", "name": "Jormuntide", "slugs": ["eau", "dragon"], "labels": ["Eau", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jormuntide.png"}, {"num": "101B", "name": "Jormuntide Ignis", "slugs": ["feu", "dragon"], "labels": ["Feu", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jormuntide-ignis.png"}, {"num": "102", "name": "Suzaku", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/suzaku.png"}, {"num": "102B", "name": "Suzaku Aqua", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/suzaku-aqua.png"}, {"num": "103", "name": "Grizzbolt", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/grizzbolt.png"}, {"num": "104", "name": "Lyleen", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lyleen.png"}, {"num": "104B", "name": "Lyleen Noct", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lyleen-noct.png"}, {"num": "105", "name": "Faleris", "slugs": ["feu"], "labels": ["Feu"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/faleris.png"}, {"num": "105B", "name": "Faleris Aqua", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/faleris-aqua.png"}, {"num": "106", "name": "Orserk", "slugs": ["electrique", "dragon"], "labels": ["Électrique", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/orserk.png"}, {"num": "107", "name": "Shadowbeak", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/shadowbeak.png"}, {"num": "108", "name": "Paladius", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/paladius.png"}, {"num": "109", "name": "Necromus", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/necromus.png"}, {"num": "110", "name": "Frostallion", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/frostallion.png"}, {"num": "110B", "name": "Frostallion Noct", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/frostallion-noct.png"}, {"num": "111", "name": "Jetragon", "slugs": ["dragon"], "labels": ["Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jetragon.png"}, {"num": "112", "name": "Bellanoir", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bellanoir.png"}, {"num": "112B", "name": "Bellanoir Libero", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bellanoir-libero.png"}, {"num": "113", "name": "Selyne", "slugs": ["tenebres", "neutre"], "labels": ["Ténèbres", "Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/selyne.png"}, {"num": "114", "name": "Croajiro", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/croajiro.png"}, {"num": "114B", "name": "Croajiro Noct", "slugs": ["eau", "tenebres"], "labels": ["Eau", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/croajiro-noct.png"}, {"num": "115", "name": "Lullu", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/lullu.png"}, {"num": "116", "name": "Shroomer", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/shroomer.png"}, {"num": "116B", "name": "Shroomer Noct", "slugs": ["herbe", "tenebres"], "labels": ["Herbe", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/shroomer-noct.png"}, {"num": "117", "name": "Kikit", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/kikit.png"}, {"num": "118", "name": "Sootseer", "slugs": ["feu", "tenebres"], "labels": ["Feu", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/sootseer.png"}, {"num": "119", "name": "Prixter", "slugs": ["terre", "tenebres"], "labels": ["Terre", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/prixter.png"}, {"num": "120", "name": "Knocklem", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/knocklem.png"}, {"num": "121", "name": "Yakumo", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/yakumo.png"}, {"num": "122", "name": "Dogen", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dogen.png"}, {"num": "123", "name": "Dazemu", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/dazemu.png"}, {"num": "124", "name": "Mimog", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/mimog.png"}, {"num": "125", "name": "Xenovader", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/xenovader.png"}, {"num": "126", "name": "Xenogard", "slugs": ["dragon"], "labels": ["Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/xenogard.png"}, {"num": "127", "name": "Xenolord", "slugs": ["tenebres", "dragon"], "labels": ["Ténèbres", "Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/xenolord.png"}, {"num": "128", "name": "Nitemary", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/nitemary.png"}, {"num": "129", "name": "Starryon", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/starryon.png"}, {"num": "130", "name": "Silvegis", "slugs": ["dragon"], "labels": ["Dragon"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/silvegis.png"}, {"num": "131", "name": "Smokie", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/smokie.png"}, {"num": "132", "name": "Celesdir", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/celesdir.png"}, {"num": "133", "name": "Omascul", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/omascul.png"}, {"num": "134", "name": "Splatterina", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/splatterina.png"}, {"num": "135", "name": "Tarantriss", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/tarantriss.png"}, {"num": "136", "name": "Azurmane", "slugs": ["electrique"], "labels": ["Électrique"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/azurmane.png"}, {"num": "137", "name": "Bastigor", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/bastigor.png"}, {"num": "138", "name": "Prunelia", "slugs": ["herbe", "tenebres"], "labels": ["Herbe", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/prunelia.png"}, {"num": "139", "name": "Nyafia", "slugs": ["tenebres"], "labels": ["Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/nyafia.png"}, {"num": "140", "name": "Gildane", "slugs": ["terre"], "labels": ["Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gildane.png"}, {"num": "141", "name": "Herbil", "slugs": ["herbe", "neutre"], "labels": ["Herbe", "Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/herbil.png"}, {"num": "142", "name": "Icelyn", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/icelyn.png"}, {"num": "143", "name": "Frostplume", "slugs": ["glace"], "labels": ["Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/frostplume.png"}, {"num": "144", "name": "Palumba", "slugs": ["herbe"], "labels": ["Herbe"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/palumba.png"}, {"num": "145", "name": "Braloha", "slugs": ["herbe", "terre"], "labels": ["Herbe", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/braloha.png"}, {"num": "146", "name": "Munchill", "slugs": ["eau", "glace"], "labels": ["Eau", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/munchill.png"}, {"num": "147", "name": "Polapup", "slugs": ["eau", "glace"], "labels": ["Eau", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/polapup.png"}, {"num": "148", "name": "Turtacle", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/turtacle.png"}, {"num": "148B", "name": "Turtacle Terra", "slugs": ["eau", "terre"], "labels": ["Eau", "Terre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/turtacle-terra.png"}, {"num": "149", "name": "Jellroy", "slugs": ["eau", "tenebres"], "labels": ["Eau", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jellroy.png"}, {"num": "150", "name": "Jelliette", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/jelliette.png"}, {"num": "151", "name": "Gloopie", "slugs": ["eau", "tenebres"], "labels": ["Eau", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/gloopie.png"}, {"num": "152", "name": "Finsider", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/finsider.png"}, {"num": "152B", "name": "Finsider Ignis", "slugs": ["feu", "eau"], "labels": ["Feu", "Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/finsider-ignis.png"}, {"num": "153", "name": "Ghangler", "slugs": ["eau", "tenebres"], "labels": ["Eau", "Ténèbres"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/ghangler.png"}, {"num": "153B", "name": "Ghangler Ignis", "slugs": ["feu", "eau"], "labels": ["Feu", "Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/ghangler-ignis.png"}, {"num": "154", "name": "Whalaska", "slugs": ["eau", "glace"], "labels": ["Eau", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/whalaska.png"}, {"num": "154B", "name": "Whalaska Ignis", "slugs": ["feu", "glace"], "labels": ["Feu", "Glace"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/whalaska-ignis.png"}, {"num": "155", "name": "Neptilius", "slugs": ["eau"], "labels": ["Eau"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/neptilius.png"}, {"num": "156", "name": "Hartalis", "slugs": ["neutre"], "labels": ["Neutre"], "img": "https://cdn.mobalytics.gg/cdn-cgi/image/format=auto,width=160/assets/news/images/palworld/pals/3d/hartalis.png"}];
+
+  const typeIcons = {
+    neutre: 'https://palworld.wiki.gg/images/thumb/Neutral_icon.png/64px-Neutral_icon.png?7fc1cc',
+    feu: 'https://palworld.wiki.gg/images/thumb/Fire_icon.png/64px-Fire_icon.png?b8b24b',
+    eau: 'https://palworld.wiki.gg/images/thumb/Water_icon.png/64px-Water_icon.png?56f787',
+    herbe: 'https://palworld.wiki.gg/images/thumb/Grass_icon.png/64px-Grass_icon.png?994046',
+    electrique: 'https://palworld.wiki.gg/images/thumb/Electric_icon.png/64px-Electric_icon.png?f0bca3',
+    glace: 'https://palworld.wiki.gg/images/thumb/Ice_icon.png/64px-Ice_icon.png?abf4d9',
+    terre: 'https://palworld.wiki.gg/images/thumb/Ground_icon.png/64px-Ground_icon.png?9a3e51',
+    tenebres: 'https://palworld.wiki.gg/images/thumb/Dark_icon.png/64px-Dark_icon.png?36df44',
+    dragon: 'https://palworld.wiki.gg/images/thumb/Dragon_icon.png/64px-Dragon_icon.png?527d27'
+  };
+
+  const allPalsGrid = document.getElementById('allPalsGrid');
+  const allPalSearch = document.getElementById('allPalSearch');
+  const allNoResults = document.getElementById('allNoResults');
+  const allTypeFilters = document.querySelectorAll('#allTypeFilters .type-chip');
+  const allPalsCount = document.getElementById('allPalsCount');
+  let activeAllType = 'all';
+
+  function renderAllPals(){
+    const q = allPalSearch.value.trim().toLowerCase();
+    const filtered = ALL_PALS.filter(p => {
+      const matchesText = p.name.toLowerCase().includes(q) || p.num.toLowerCase().includes(q);
+      const matchesType = (activeAllType === 'all') || p.slugs.includes(activeAllType);
+      return matchesText && matchesType;
+    });
+
+    allPalsGrid.innerHTML = filtered.map(p => {
+      const typeBadges = p.labels.map((label, i) => {
+        const slug = p.slugs[i];
+        const icon = typeIcons[slug] || '';
+        return '<span class="ptype ptype-' + slug + '"><img class="ptype-icon" src="' + icon + '" alt="">' + label + '</span>';
+      }).join('');
+      return '<div class="mini-card">' +
+        '<img class="mini-img" src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '<div class="mini-top"><span class="mini-name">' + p.name + '</span><span class="mini-num">#' + p.num + '</span></div>' +
+        '<div class="mini-types">' + typeBadges + '</div>' +
+        '</div>';
+    }).join('');
+
+    allNoResults.style.display = filtered.length === 0 ? 'block' : 'none';
+    allPalsCount.textContent = filtered.length + ' entrée' + (filtered.length > 1 ? 's' : '');
+  }
+
+  allPalSearch.addEventListener('input', renderAllPals);
+  allTypeFilters.forEach(chip => {
+    chip.addEventListener('click', function(){
+      activeAllType = this.dataset.type;
+      allTypeFilters.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      renderAllPals();
+    });
+  });
+
+  renderAllPals();
 </script>
 
 </body>
